@@ -1,0 +1,19 @@
+{
+    "name": "Enemy",
+    "components": {
+        "1": {
+            "type": "Enemy"
+        },
+        "2": {
+            "type": "Transform"
+        },
+        "3": {
+            "type": "ConstantMovement",
+            "x_vel": -1.5
+        },
+        "4": {
+            "type": "SpriteRenderer",
+            "sprite": "enemy1"
+        }
+    }
+}

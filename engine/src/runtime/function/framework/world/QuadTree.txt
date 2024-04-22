@@ -1,0 +1,107 @@
+class QuadTree {
+	private:
+		static const int maxDepth = 1;
+		const uint32_t depth;
+		// 0, 1, 
+		// 2, 3
+		std::unordered_set<Actor*> _actors;
+		std::unordered_set<Actor*> _actorsOnEdge;
+		std::array<std::unique_ptr<QuadTree>, 4> _children;
+		int _xmin, _xmax, _ymin, _ymax;
+		int xbound, ybound;
+
+		bool isOnEdge(const glm::ivec2& pos) {
+			return abs(pos.y - ybound) <= 1 || abs(pos.x - xbound) <= 1;
+		}
+
+
+
+	public:
+
+		QuadTree(uint32_t depth, int ymin, int ymax, int xmin, int xmax)
+			: depth(depth), _xmin(xmin), _xmax(xmax), _ymin(ymin), _ymax(ymax) {
+			xbound = (_xmin + _xmax) / 2;
+			ybound = (_ymin + _ymax) / 2;
+		}
+
+		void construct(const std::unordered_set<Actor*>& actors) {
+			if (depth == maxDepth) {
+				_actors = actors;
+			} else {
+				std::array<std::unordered_set<Actor*>, 4> division{};
+
+				for (auto& actor : actors) {
+					if (actor->transform.position.y < ybound) {
+						if (actor->transform.position.x < xbound) division[0].insert(actor);
+						else division[1].insert(actor);
+					} else {
+						if (actor->transform.position.x < xbound) division[2].insert(actor);
+						else division[3].insert(actor);
+					}
+					if (isOnEdge(actor->transform.position))
+						_actorsOnEdge.insert(actor);
+				}
+				_children[0] = std::make_unique<QuadTree>(depth + 1, _ymin, ybound - 1, _xmin, xbound - 1);
+				_children[1] = std::make_unique<QuadTree>(depth + 1, _ymin, ybound - 1, xbound, _xmax);
+				_children[2] = std::make_unique<QuadTree>(depth + 1, ybound, _ymax, _xmin, xbound - 1);
+				_children[3] = std::make_unique<QuadTree>(depth + 1, ybound, _ymax, xbound, _xmax);
+				for (int i = 0; i < 4; i++) _children[i]->construct(division[i]);
+			}
+		}
+
+		std::unique_ptr<QuadTree>& findNextLeaf(const glm::ivec2& pos) {
+			if (pos.y < ybound) {
+				if (pos.x < xbound) return _children[0];
+				else return _children[1];
+			} else {
+				if (pos.x < xbound) return _children[2];
+			}
+			return _children[3];
+		}
+
+		std::unordered_set<Actor*> getNear(const glm::ivec2 pos, 
+			const std::function<bool(const glm::ivec2& pos1, const glm::ivec2& pos2)>& isNear, 
+			bool checkEdge = true) {
+			std::unordered_set<Actor*> ans;
+			if (depth == maxDepth) {
+				for (auto a : _actors) {
+					if (isNear(a->transform.position, pos))
+						ans.insert(a);
+				}
+			} else {
+				if (checkEdge) {
+					if (isOnEdge(pos)) {
+						for (auto a : _actorsOnEdge) {
+							if (isNear(a->transform.position, pos))
+								ans.insert(a);
+						}
+					}
+				}
+				std::unordered_set<Actor*> temp = findNextLeaf(pos)->getNear(pos, isNear);
+				ans.insert(temp.begin(), temp.end());
+			}
+			return ans;
+		}
+
+		void insert(Actor* actor) {
+			if (depth == maxDepth) {
+				_actors.insert(actor);
+			} else {
+				findNextLeaf(actor->transform.position)->insert(actor);
+			}
+		}
+
+		void erase(const glm::ivec2& pos, Actor* actor) {
+			if (depth == maxDepth)
+				_actors.erase(actor);
+			else {
+				findNextLeaf(pos)->erase(pos, actor);
+			}
+		}
+
+		void update(const glm::ivec2& oldPos, Actor* actor) {
+			erase(oldPos, actor);
+			insert(actor);
+		}
+
+	};

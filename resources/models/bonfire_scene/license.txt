@@ -1,0 +1,11 @@
+Model Information:
+* title:	Isometric "Cathedral bonfire"
+* source:	https://sketchfab.com/3d-models/isometric-cathedral-bonfire-7704545cd81d4c30bbae19405988c787
+* author:	Emix0n (https://sketchfab.com/Emix0n)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Isometric "Cathedral bonfire"" (https://sketchfab.com/3d-models/isometric-cathedral-bonfire-7704545cd81d4c30bbae19405988c787) by Emix0n (https://sketchfab.com/Emix0n) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

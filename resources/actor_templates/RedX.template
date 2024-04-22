@@ -1,0 +1,14 @@
+{
+	"name": "red_x",
+	"components": {
+		"rx0": {
+			"type": "Transform",
+			"x": 1,
+			"y": 1.494
+		},
+		"rx_sr": {
+			"type": "SpriteRenderer",
+			"sprite": "big_red_x"
+		}
+	}
+}

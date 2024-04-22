@@ -1,0 +1,12 @@
+{
+	"actors": [
+		{
+			"name": "cave",
+			"components": {
+				"1": {
+					"type": "ModelRenderer"
+				}
+			}
+		}
+	]
+}
